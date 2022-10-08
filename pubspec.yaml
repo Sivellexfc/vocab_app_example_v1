@@ -39,6 +39,7 @@ dependencies:
   fluent_ui: ^4.0.0
   gap:
   expandable_tree_menu: ^0.1.0-dev.5
+  shared_preferences: ^2.0.15
 
 
 dev_dependencies:

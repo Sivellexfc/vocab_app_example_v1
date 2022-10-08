@@ -1,10 +1,11 @@
-import 'package:expandable_tree_menu/expandable_tree_menu.dart';
-//import 'package:fluent_ui/fluent_ui.dart';
+import 'dart:math';
+
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mainpagedeneme/preferences/shared_preferences.dart';
 
 class vocabularyPage extends StatefulWidget {
   const vocabularyPage({Key? key}) : super(key: key);
@@ -14,7 +15,10 @@ class vocabularyPage extends StatefulWidget {
 }
 
 class _vocabularyPageState extends State<vocabularyPage> {
-  Set<String> words = {
+  var currentWords;
+  int stage = 0;
+
+  var words = {
     'word',
     'receive',
     'row',
@@ -35,7 +39,6 @@ class _vocabularyPageState extends State<vocabularyPage> {
     'break',
     'lady'
   };
-
   var keys = {
     'word': 'kelime',
     'word': 'kelime',
@@ -88,6 +91,17 @@ class _vocabularyPageState extends State<vocabularyPage> {
     });
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    var options = new List.filled(4, null, growable: false);
+    var random = Random();
+    for (var i = 0; i <= 20; i++) {
+      print('random sayı : ' + random.nextInt(4).toString());
+    }
+    super.initState();
+  }
+
   void changeSentences_second() {
     setState(() {
       if (!statement_second) {
@@ -126,7 +140,7 @@ class _vocabularyPageState extends State<vocabularyPage> {
                     fontSize: 16, fontWeight: FontWeight.w200),
               ),
               Text(
-                'word',
+                words.elementAt(11),
                 style: GoogleFonts.raleway(
                     fontSize: 40, fontWeight: FontWeight.w700),
               ),
@@ -275,17 +289,20 @@ class _vocabularyPageState extends State<vocabularyPage> {
                 ),
               ),
               Gap(10),
-              Container(
-                height: 40,
-                width: 340,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: Colors.grey.shade200),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  'Cezalandırmak',
-                  style: GoogleFonts.raleway(),
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 40,
+                  width: 340,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text(
+                    'Cezalandırmak',
+                    style: GoogleFonts.raleway(),
+                  ),
                 ),
               ),
               Gap(10),
