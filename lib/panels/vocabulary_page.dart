@@ -5,7 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mainpagedeneme/preferences/shared_preferences.dart';
+import 'package:mainpagedeneme/funtions/options.dart';
+//import 'package:mainpagedeneme/preferences/shared_preferences.dart';
+import 'package:mainpagedeneme/styles/features/features_styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/data.dart';
 
 class vocabularyPage extends StatefulWidget {
   const vocabularyPage({Key? key}) : super(key: key);
@@ -15,102 +20,70 @@ class vocabularyPage extends StatefulWidget {
 }
 
 class _vocabularyPageState extends State<vocabularyPage> {
-  var currentWords;
-  int stage = 0;
+  setIncrement() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('chapter', 0);
+  }
 
-  var words = {
-    'word',
-    'receive',
-    'row',
-    'mouth',
-    'exact',
-    'symbol',
-    'die',
-    'least',
-    'trouble',
-    'shout',
-    'except',
-    'wrote',
-    'seed',
-    'tone',
-    'join',
-    'suggest',
-    'clean',
-    'break',
-    'lady'
-  };
-  var keys = {
-    'word': 'kelime',
-    'word': 'kelime',
-    'receive': 'almak',
-    'row': 'çiğ',
-    'mouth': 'ağız',
-    'exact': 'turkish',
-    'symbol': 'sembol',
-    'die': 'ölmek',
-    'least': 'en az',
-    'trouble': 'bela',
-    'shout': '',
-    'except': 'hariç',
-    'wrote': 'yazmak',
-    'seed': 'tohum',
-    'tone': 'ton',
-    'join': 'katılmak',
-    'suggest': 'önermek',
-    'clean': 'temizlemek',
-    'break': 'kırmak',
-    'lady': 'bayan'
-  };
-
-  bool statement_first = false;
-  bool statement_second = false;
-
-  String display_sentence_first =
-      'I can neither punish him if he does wrong nor reward him if he does right.';
-  String display_sentence_second =
-      'We must punish the villain who has caused the ruin of Moscow';
-
-  String sentences_first =
-      'I can neither punish him if he does wrong nor reward him if he does right.';
-  String sentences_second =
-      'We must punish the villain who has caused the ruin of Moscow';
-  String sentences_first_tr =
-      'Ne yanlış yaparsa cezalandırabilirim ne de doğru yaparsa onu ödüllendirebilirim.';
-  String sentences_second_tr =
-      'Moskova nın yıkılmasına neden olan kötü adamı cezalandırmalıyız.';
-
-  void changeSentences_first() {
+  getIncrement() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      if (!statement_first) {
-        display_sentence_first = sentences_first_tr;
+      CHAPTER_ONE = prefs.getInt('chapter')!;
+      if (CHAPTER_ONE == 0) {
+        CHAPTER_ONE = 0;
       }
-      if (statement_first) {
-        display_sentence_first = sentences_first;
-      }
-      statement_first = !statement_first;
     });
   }
+
+  int getRandom() {
+    var rand = Random();
+    int getRandom = rand.nextInt(4);
+    return getRandom;
+  }
+
+  getOption() {
+    OptionsAction.getRandomWordTR(
+        appData.words, appData.means, getRandom(), CHAPTER_ONE);
+  }
+
+  AppData appData = new AppData();
+  //OptionsAction optionsAction = new OptionsAction();
+
+  List<String> OPTIONS = [];
+
+  int CHAPTER_ONE = 0;
+  var currentWords;
+  int stage = 0;
 
   @override
   void initState() {
     // TODO: implement initState
-    var options = new List.filled(4, null, growable: false);
-    var random = Random();
-    for (var i = 0; i <= 20; i++) {
-      print('random sayı : ' + random.nextInt(4).toString());
-    }
     super.initState();
+    setIncrement();
+    getIncrement();
+  }
+
+  void changeSentences_first() {
+    setState(() {
+      if (!appData.statement_first) {
+        appData.display_sentence_first = appData.sentences_first_tr;
+      }
+      if (appData.statement_first) {
+        appData.display_sentence_first = appData.sentences_first;
+      }
+      appData.statement_first = !appData.statement_first;
+    });
   }
 
   void changeSentences_second() {
     setState(() {
-      if (!statement_second) {
-        display_sentence_second = sentences_second_tr;
+      if (!appData.statement_second) {
+        appData.display_sentence_second = appData.sentences_second_tr;
       }
-      if (statement_second) {
-        display_sentence_second = sentences_second;
+      if (appData.statement_second) {
+        appData.display_sentence_second = appData.sentences_second;
       }
-      statement_second = !statement_second;
+      appData.statement_second = !appData.statement_second;
     });
   }
 
@@ -131,16 +104,16 @@ class _vocabularyPageState extends State<vocabularyPage> {
                 )
               ],
             ),
-          ),
+          ), //main
           Column(
             children: [
               Text(
-                '3/148',
+                '${CHAPTER_ONE + 1}/${appData.words.length}',
                 style: GoogleFonts.raleway(
                     fontSize: 16, fontWeight: FontWeight.w200),
               ),
               Text(
-                words.elementAt(11),
+                appData.words.elementAt(CHAPTER_ONE),
                 style: GoogleFonts.raleway(
                     fontSize: 40, fontWeight: FontWeight.w700),
               ),
@@ -183,7 +156,7 @@ class _vocabularyPageState extends State<vocabularyPage> {
                       Gap(15),
                       Flexible(
                         child: Text(
-                          display_sentence_first,
+                          appData.display_sentence_first,
                           style: GoogleFonts.raleway(fontSize: 16),
                           maxLines: 3,
                         ),
@@ -211,7 +184,7 @@ class _vocabularyPageState extends State<vocabularyPage> {
                       Gap(15),
                       Flexible(
                         child: Text(
-                          display_sentence_second,
+                          appData.display_sentence_second,
                           style: GoogleFonts.raleway(fontSize: 16),
                           maxLines: 3,
                         ),
@@ -247,48 +220,6 @@ class _vocabularyPageState extends State<vocabularyPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 40,
-                width: 340,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: Colors.grey.shade200),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  'Cezalandırmak',
-                  style: GoogleFonts.raleway(),
-                ),
-              ),
-              Gap(10),
-              Container(
-                height: 40,
-                width: 340,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: Colors.grey.shade200),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  'Cezalandırmak',
-                  style: GoogleFonts.raleway(),
-                ),
-              ),
-              Gap(10),
-              Container(
-                height: 40,
-                width: 340,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: Colors.grey.shade200),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  'Cezalandırmak',
-                  style: GoogleFonts.raleway(),
-                ),
-              ),
-              Gap(10),
               InkWell(
                 onTap: () {},
                 child: Container(
@@ -297,6 +228,61 @@ class _vocabularyPageState extends State<vocabularyPage> {
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
                       color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text(
+                    'Cezalandırmak',
+                    style: GoogleFonts.raleway(),
+                  ),
+                ),
+              ),
+              Gap(10),
+              InkWell(
+                child: Container(
+                  height: 40,
+                  width: 340,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text(
+                    'Cezalandırmak',
+                    style: GoogleFonts.raleway(),
+                  ),
+                ),
+              ),
+              Gap(10),
+              InkWell(
+                child: Container(
+                  height: 40,
+                  width: 340,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text(
+                    'Cezalandırmak',
+                    style: GoogleFonts.raleway(),
+                  ),
+                ),
+              ),
+              Gap(10),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    OptionsColor = correctOptionsColor;
+                    CHAPTER_ONE++;
+                    setIncrement();
+                  });
+                },
+                child: Container(
+                  height: 40,
+                  width: 340,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: OptionsColor,
                       border: Border.all(width: 1, color: Colors.grey.shade200),
                       borderRadius: BorderRadius.circular(5)),
                   child: Text(
