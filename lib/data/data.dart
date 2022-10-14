@@ -25,7 +25,7 @@ class AppData {
     'almak',
     'çiğ',
     'ağız',
-    'turkish',
+    'kesin',
     'sembol',
     'ölmek',
     'en az',
@@ -41,6 +41,9 @@ class AppData {
     'kırmak',
     'bayan'
   };
+
+  bool isTrue = false;
+  bool isChosenStatement = false;
 
   bool statement_first = false;
   bool statement_second = false;
